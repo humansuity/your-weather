@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.ui.dashboard
+package com.humansuit.yourweather.view.forecast
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,22 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.humansuit.yourweather.R
 
-class DashboardFragment : Fragment() {
-
-    private lateinit var dashboardViewModel: DashboardViewModel
+class ForecastFragment : Fragment() {
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-                ViewModelProvider(this).get(DashboardViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
         return root
     }
 }

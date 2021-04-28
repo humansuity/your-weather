@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.humansuit.yourweather.ui.home.HomeFragment"
+        android:name="com.humansuit.yourweather.view.current_weather.CurrentWeatherFragment"
         android:label="@string/title_today_weather"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.humansuit.yourweather.ui.dashboard.DashboardFragment"
+        android:name="com.humansuit.yourweather.view.forecast.ForecastFragment"
         android:label="@string/title_forecast"
         tools:layout="@layout/fragment_dashboard" />
 
