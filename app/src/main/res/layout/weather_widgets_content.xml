@@ -1,35 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/windSpeedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/windSpeedWidget"
+        app:layout_constraintStart_toStartOf="@+id/windSpeedWidget"
+        app:layout_constraintTop_toBottomOf="@+id/windSpeedWidget"
+        tools:text="63%" />
+
+    <TextView
+        android:id="@+id/windDirectionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/windDirectionWidget"
+        app:layout_constraintStart_toStartOf="@+id/windDirectionWidget"
+        app:layout_constraintTop_toBottomOf="@+id/windDirectionWidget"
+        tools:text="63%" />
+
+    <TextView
+        android:id="@+id/pressureText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/pressureWidget"
+        app:layout_constraintStart_toStartOf="@+id/pressureWidget"
+        app:layout_constraintTop_toBottomOf="@+id/pressureWidget"
+        tools:text="63%" />
+
+    <TextView
+        android:id="@+id/rainfallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/rainWidget"
+        app:layout_constraintStart_toStartOf="@+id/rainWidget"
+        app:layout_constraintTop_toBottomOf="@+id/rainWidget"
+        tools:text="63%" />
 
     <include
         android:id="@+id/humidityWidget"
         layout="@layout/weather_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="72dp"
+        app:layout_constraintEnd_toStartOf="@+id/rainWidget"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
     <include
         android:id="@+id/rainWidget"
         layout="@layout/weather_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
         app:layout_constraintEnd_toStartOf="@+id/pressureWidget"
-        app:layout_constraintStart_toEndOf="@id/humidityWidget"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/humidityWidget"
+        app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
     <include
         android:id="@+id/pressureWidget"
         layout="@layout/weather_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="26dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/rainWidget"
+        app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
 
     <include
@@ -37,8 +91,9 @@
         layout="@layout/weather_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="46dp"
+        android:layout_marginBottom="46dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomDivider"
         app:layout_constraintEnd_toStartOf="@+id/rainWidget"
         app:layout_constraintStart_toEndOf="@+id/humidityWidget"
         app:layout_constraintTop_toBottomOf="@id/rainWidget" />
@@ -49,11 +104,44 @@
         layout="@layout/weather_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="46dp"
+        android:layout_marginBottom="46dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomDivider"
         app:layout_constraintEnd_toStartOf="@+id/pressureWidget"
         app:layout_constraintStart_toEndOf="@+id/rainWidget"
         app:layout_constraintTop_toBottomOf="@id/rainWidget" />
+
+    <View
+        android:id="@+id/topDivider"
+        android:layout_width="160dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="#E8E8E8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_width="160dp"
+        android:layout_height="2dp"
+        android:layout_marginBottom="16dp"
+        android:background="#E8E8E8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/humidityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/humidityWidget"
+        app:layout_constraintStart_toStartOf="@+id/humidityWidget"
+        app:layout_constraintTop_toBottomOf="@+id/humidityWidget"
+        tools:text="63%" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

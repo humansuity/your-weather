@@ -1,6 +1,6 @@
 package com.humansuit.yourweather.network
 
-import com.humansuit.yourweather.network.data.CurrentWeatherResponse
+import com.humansuit.yourweather.network.data.WeatherStateResponse
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,5 +12,5 @@ interface OpenWeatherService {
     @GET("weather?units=metric&appid=$apikey")
     fun getCurrentWeatherData(
         @Query("q") location: String
-    ) : Single<CurrentWeatherResponse>
+    ) : Single<WeatherStateResponse>
 }

@@ -3,7 +3,7 @@ package com.humansuit.yourweather.view.current_weather
 import android.util.Log
 import com.humansuit.yourweather.MainContract
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.network.data.CurrentWeatherResponse
+import com.humansuit.yourweather.network.data.WeatherStateResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -22,16 +22,16 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
         view = null
     }
 
-    fun loadCurrentWeather(location: String) {
+    private fun loadCurrentWeather(location: String) {
         weatherModel.getCurrentWeather(location)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.doOnSubscribe { view?.showProgress(true) }
-            ?.delay(1000, TimeUnit.MILLISECONDS)
             ?.doFinally { view?.showProgress(false) }
-            ?.subscribe(object: DisposableSingleObserver<CurrentWeatherResponse>() {
-                override fun onSuccess(value: CurrentWeatherResponse?) {
-                    value?.weatherState?.let { view?.showWeatherState(it) }
+            ?.subscribe(object: DisposableSingleObserver<WeatherStateResponse>() {
+                override fun onSuccess(value: WeatherStateResponse?) {
+                    value?.let { view?.showWeatherState(it) }
+                    Log.d("Network", "Got success result from openweatherapi.com!")
                 }
 
                 override fun onError(e: Throwable?) {

@@ -1,8 +1,9 @@
 package com.humansuit.yourweather.view.current_weather
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.humansuit.yourweather.R
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -10,7 +11,7 @@ import com.humansuit.yourweather.MainContract
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.network.OpenWeatherService
-import com.humansuit.yourweather.network.data.WeatherState
+import com.humansuit.yourweather.network.data.WeatherStateResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -27,14 +28,35 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         super.onViewCreated(view, savedInstanceState)
 
         setPresenter(CurrentWeatherPresenter(this, WeatherModel(getWeatherApi())))
+        initIcons()
         presenter.onViewCreated()
     }
 
-    override fun showWeatherState(weatherState: WeatherState) {
-        viewBinding.weatherWidgetContainer.humidityWidget.imageView
+    override fun showWeatherState(weatherState: WeatherStateResponse) {
+        with(viewBinding.weatherWidgetContainer) {
+            humidityText.text = weatherState.mainWeatherState.humidity.toString() + " %"
+            pressureText.text = weatherState.mainWeatherState.pressure.toString() + " hPa"
+            windSpeedText.text = weatherState.wind.getRoundedSpeed().toString() + " km/h"
+            windDirectionText.text = "SE"
+            rainfallText.text = "1.0 mm"
+        }
+        viewBinding.degree.text = weatherState.mainWeatherState.getRoundedTemperature().toString() + " °C"
+        viewBinding.weatherState.text = weatherState.weather[0].main
+    }
+
+    fun initIcons() {
+        with(viewBinding.weatherWidgetContainer) {
+            humidityWidget.imageView.setImageResource(R.drawable.ic_humidity)
+            rainWidget.imageView.setImageResource(R.drawable.ic_rainfall)
+            pressureWidget.imageView.setImageResource(R.drawable.ic_pressure)
+            windSpeedWidget.imageView.setImageResource(R.drawable.ic_wind)
+            windDirectionWidget.imageView.setImageResource(R.drawable.ic_wind_direction)
+        }
     }
 
     override fun showProgress(show: Boolean) {
+        val progressBar = activity?.findViewById<ProgressBar>(R.id.progressBar)
+        progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
     }
 
     override fun setPresenter(presenter: MainContract.Presenter) {
