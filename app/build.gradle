@@ -16,6 +16,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -56,4 +61,7 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+
+    /* VIEWBINDING PROPERTY DELEGATE */
+    implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.4'
 }

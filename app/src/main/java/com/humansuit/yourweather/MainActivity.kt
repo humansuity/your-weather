@@ -35,41 +35,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
 
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(90, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://api.openweathermap.org/data/2.5/")
-            .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build()
-
-        val weatherApi = retrofit.create(OpenWeatherService::class.java)
-
-        weatherApi.getCurrentWeatherData(location = "Vitebsk")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object: DisposableSingleObserver<CurrentWeatherResponse>() {
-
-                override fun onSuccess(value: CurrentWeatherResponse?) {
-                    Log.d("Network", "Description: ${value?.weather?.first()?.description}")
-                    Log.d("Network", "Current temperature: ${value?.weatherState?.temperature}")
-                    Log.d("Network", "Current wind speed: ${value?.wind?.speed} km/h")
-                }
-
-                override fun onError(e: Throwable?) {
-                    Log.e("Network", "Something went wrong!\n${e?.message}")
-                }
-
-            } )
     }
 }

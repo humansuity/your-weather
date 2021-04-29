@@ -2,16 +2,13 @@ package com.humansuit.yourweather
 
 interface MainContract {
 
-    interface View {
-
+    interface View<T> {
+        fun setPresenter(presenter: T)
     }
 
     interface Presenter {
-
-    }
-
-    interface Model {
-
+        fun onViewCreated()
+        fun onViewDetach()
     }
 
 }
