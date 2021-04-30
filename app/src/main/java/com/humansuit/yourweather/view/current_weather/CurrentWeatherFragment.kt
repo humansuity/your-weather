@@ -28,30 +28,19 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         super.onViewCreated(view, savedInstanceState)
 
         setPresenter(CurrentWeatherPresenter(this, WeatherModel(getWeatherApi())))
-        initIcons()
         presenter.onViewCreated()
     }
 
     override fun showWeatherState(weatherState: WeatherStateResponse) {
         with(viewBinding.weatherWidgetContainer) {
-            humidityText.text = weatherState.mainWeatherState.humidity.toString() + " %"
-            pressureText.text = weatherState.mainWeatherState.pressure.toString() + " hPa"
-            windSpeedText.text = weatherState.wind.getRoundedSpeed().toString() + " km/h"
+            humidityText.text = weatherState.mainWeatherState.getHumidity()
+            pressureText.text = weatherState.mainWeatherState.getPressure()
+            windSpeedText.text = weatherState.wind.getRoundedSpeed()
             windDirectionText.text = "SE"
-            rainfallText.text = "1.0 mm"
+            rainfallText.text = weatherState.rain?.getOneHourRainfall() ?: "0.0 mm"
         }
-        viewBinding.degree.text = weatherState.mainWeatherState.getRoundedTemperature().toString() + " °C"
+        viewBinding.degree.text = weatherState.mainWeatherState.getRoundedTemperature()
         viewBinding.weatherState.text = weatherState.weather[0].main
-    }
-
-    fun initIcons() {
-        with(viewBinding.weatherWidgetContainer) {
-            humidityWidget.imageView.setImageResource(R.drawable.ic_humidity)
-            rainWidget.imageView.setImageResource(R.drawable.ic_rainfall)
-            pressureWidget.imageView.setImageResource(R.drawable.ic_pressure)
-            windSpeedWidget.imageView.setImageResource(R.drawable.ic_wind)
-            windDirectionWidget.imageView.setImageResource(R.drawable.ic_wind_direction)
-        }
     }
 
     override fun showProgress(show: Boolean) {

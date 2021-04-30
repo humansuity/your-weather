@@ -53,32 +53,32 @@
         app:layout_constraintTop_toBottomOf="@+id/rainWidget"
         tools:text="63%" />
 
-    <include
+    <ImageView
         android:id="@+id/humidityWidget"
-        layout="@layout/weather_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="26dp"
         android:layout_marginEnd="72dp"
+        android:src="@drawable/ic_humidity"
         app:layout_constraintEnd_toStartOf="@+id/rainWidget"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
-    <include
+    <ImageView
         android:id="@+id/rainWidget"
-        layout="@layout/weather_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/ic_rainfall"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="26dp"
         app:layout_constraintEnd_toStartOf="@+id/pressureWidget"
         app:layout_constraintStart_toEndOf="@+id/humidityWidget"
         app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
-    <include
+    <ImageView
         android:id="@+id/pressureWidget"
-        layout="@layout/weather_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/ic_pressure"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="72dp"
         android:layout_marginTop="26dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,11 +86,11 @@
         app:layout_constraintTop_toBottomOf="@id/topDivider" />
 
 
-    <include
+    <ImageView
         android:id="@+id/windSpeedWidget"
-        layout="@layout/weather_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/ic_wind"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="46dp"
         android:layout_marginBottom="46dp"
         app:layout_constraintBottom_toTopOf="@id/bottomDivider"
@@ -99,11 +99,11 @@
         app:layout_constraintTop_toBottomOf="@id/rainWidget" />
 
 
-    <include
+    <ImageView
         android:id="@+id/windDirectionWidget"
-        layout="@layout/weather_widget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/ic_wind_direction"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="46dp"
         android:layout_marginBottom="46dp"
         app:layout_constraintBottom_toTopOf="@id/bottomDivider"

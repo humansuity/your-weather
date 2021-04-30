@@ -7,5 +7,5 @@ data class Wind(
     val speed: Float,
     @field:Json(name = "deg") val degree: Int
 ) {
-    fun getRoundedSpeed() = speed.roundToInt()
+    fun getRoundedSpeed() = speed.roundToInt().toString() + " km/h"
 }
