@@ -16,7 +16,7 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
     private var view: CurrentWeatherView? = view
 
     override fun onViewCreated() {
-        loadCurrentWeather(location = "Moscow")
+        loadCurrentWeather(location = "Vitebsk")
     }
     override fun onViewDetach() {
         view = null

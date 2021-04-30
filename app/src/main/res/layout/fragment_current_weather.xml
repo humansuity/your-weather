@@ -52,7 +52,7 @@
             android:fontFamily="sans-serif-thin"
             android:paddingEnd="16dp"
             android:textAlignment="textEnd"
-            android:textColor="#70B1D6"
+            android:textColor="@color/weather_main_params"
             android:textSize="26sp"
             android:textStyle="bold"
             tools:text="22 C" />
@@ -72,7 +72,7 @@
             android:fontFamily="sans-serif-thin"
             android:paddingLeft="16dp"
             android:textAlignment="viewStart"
-            android:textColor="#70B1D6"
+            android:textColor="@color/weather_main_params"
             android:textSize="26sp"
             android:textStyle="bold"
             tools:text="Sunny" />

@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="icon_tint">#FFD387</color>
+    <color name="weather_main_params">#70B1D6</color>
 </resources>
