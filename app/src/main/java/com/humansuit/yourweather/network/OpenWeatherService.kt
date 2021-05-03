@@ -12,7 +12,8 @@ interface OpenWeatherService {
 
     @GET("weather?appid=$apikey")
     fun getCurrentWeatherData(
-        @Query("q") location: String,
+        @Query("lat") latitude: Int,
+        @Query("lon") longitude: Int,
         @Query("units") units: String
     ) : Single<WeatherStateResponse>
 

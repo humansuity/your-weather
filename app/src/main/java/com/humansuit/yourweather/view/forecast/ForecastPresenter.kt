@@ -1,5 +1,6 @@
 package com.humansuit.yourweather.view.forecast
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi

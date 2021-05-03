@@ -1,10 +1,12 @@
 package com.humansuit.yourweather.view.current_weather
 
+import android.content.SharedPreferences
+import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.humansuit.yourweather.R
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.humansuit.yourweather.utils.MainContract
@@ -13,27 +15,28 @@ import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
-import com.humansuit.yourweather.utils.requestLocation
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), CurrentWeatherView {
 
     private val viewBinding: FragmentCurrentWeatherBinding by viewBinding()
     private lateinit var presenter: MainContract.Presenter
+    private lateinit var weatherModel: WeatherModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.requestLocation {
-            Log.e("Location", "LOCATION IS: ${it?.longitude}")
-        }
-        setPresenter(CurrentWeatherPresenter(this, WeatherModel(getWeatherApi())))
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        weatherModel = WeatherModel(getWeatherApi(), sharedPreferences)
+        setPresenter(CurrentWeatherPresenter(this, weatherModel))
         presenter.onViewCreated()
     }
+
 
     override fun showWeatherState(weatherState: WeatherStateResponse) {
         with(viewBinding.weatherWidgetContainer) {
@@ -45,6 +48,8 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         }
         viewBinding.degree.text = weatherState.mainWeatherState.getTemperatureWithCelsiumMark()
         viewBinding.weatherState.text = weatherState.weather[0].main
+        viewBinding.currentLocation.text =
+            weatherModel.getCityNameByLocation(Geocoder(requireContext(), Locale.getDefault()))
     }
 
     override fun showProgress(show: Boolean) {
@@ -60,6 +65,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         presenter.onViewDetach()
         super.onDetach()
     }
+
 
     private fun getWeatherApi(): OpenWeatherService? {
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
@@ -82,5 +88,8 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
         return retrofit.create(OpenWeatherService::class.java)
     }
+
+
+
 
 }

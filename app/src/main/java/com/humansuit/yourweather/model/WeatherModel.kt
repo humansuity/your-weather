@@ -1,5 +1,7 @@
 package com.humansuit.yourweather.model
 
+import android.content.SharedPreferences
+import android.location.Geocoder
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.model.data.ForecastSection
 import com.humansuit.yourweather.network.OpenWeatherService
@@ -7,21 +9,42 @@ import com.humansuit.yourweather.network.data.current_weather.WeatherStateRespon
 import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
 import com.humansuit.yourweather.network.data.forecast.ForecastListItem
 import io.reactivex.rxjava3.core.Single
+import java.lang.IllegalStateException
 import java.util.*
+import kotlin.math.roundToInt
 
-class WeatherModel(private val weatherApi: OpenWeatherService?) {
+class WeatherModel(
+    private val weatherApi: OpenWeatherService?,
+    private val sharedPreferences: SharedPreferences
+) {
 
-    fun getCurrentWeather(location: String, units: String = "metric"): Single<WeatherStateResponse>? {
-        return weatherApi?.getCurrentWeatherData(location, units)
+    fun getCurrentWeather(latitude: Int, longitude: Int, units: String = "metric"): Single<WeatherStateResponse>? {
+        return weatherApi?.getCurrentWeatherData(latitude, longitude, units)
     }
 
-    fun getFiveDayForecast(location: String, timestamps: Int = 40, units: String = "metric"): Single<FiveDayForecastResponse>? {
+    fun getFiveDayForecast(location: String = "Minsk", timestamps: Int = 40, units: String = "metric"): Single<FiveDayForecastResponse>? {
         return weatherApi?.getFiveDayForecast(location, timestamps, units)
     }
 
     fun getParsedForecast(forecastList: List<ForecastListItem>): List<ForecastSection> {
         val dailyForecastList = getDailyForecastList(forecastList)
         return getForecastSectionList(dailyForecastList)
+    }
+
+    fun getSavedLocation(): Pair<Int, Int> {
+        if (sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude")) {
+            val latitude = sharedPreferences.getString("latitude", "0")?.toFloat()!!.roundToInt()
+            val longitude = sharedPreferences.getString("longitude", "0")?.toFloat()!!.roundToInt()
+            return Pair(latitude, longitude)
+        } else throw IllegalStateException("")
+    }
+
+    fun getCityNameByLocation(geocoder: Geocoder) : String {
+        val location = getSavedLocation()
+        val addressesList = geocoder.getFromLocation(
+            location.first.toDouble(),
+            location.second.toDouble(), 1)
+        return addressesList[0].getAddressLine(0) ?: "Undefined"
     }
 
 

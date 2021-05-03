@@ -70,6 +70,13 @@ dependencies {
     /* VIEWBINDING PROPERTY DELEGATE */
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.4'
 
+
+    /* DAGGER */
     implementation 'com.google.dagger:hilt-android:2.35.1'
     kapt 'com.google.dagger:hilt-compiler:2.35.1'
+
+    /* GOOGLE PLAY SERVICE LOCATION */
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+
+    implementation 'androidx.preference:preference:1.1.1'
 }

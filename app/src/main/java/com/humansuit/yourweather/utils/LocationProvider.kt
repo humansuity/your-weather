@@ -28,7 +28,7 @@ class LocationProvider(private val context: Context) {
             Log.e("Location", "Getting current location...")
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    1000, 0F,
+                    2000, 0F,
                     locationListener)
         } else {
             Log.e("Location", "Gps is not available")

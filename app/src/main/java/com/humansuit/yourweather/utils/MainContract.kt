@@ -1,5 +1,7 @@
 package com.humansuit.yourweather.utils
 
+import android.content.SharedPreferences
+
 interface MainContract {
 
     interface View<T> {

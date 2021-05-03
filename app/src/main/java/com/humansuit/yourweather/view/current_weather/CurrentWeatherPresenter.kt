@@ -1,5 +1,6 @@
 package com.humansuit.yourweather.view.current_weather
 
+import android.content.SharedPreferences
 import android.util.Log
 import com.humansuit.yourweather.utils.MainContract
 import com.humansuit.yourweather.model.WeatherModel
@@ -15,14 +16,15 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
     private var view: CurrentWeatherView? = view
 
     override fun onViewCreated() {
-        loadCurrentWeather(location = "Vitebsk")
+        loadCurrentWeather()
     }
     override fun onViewDetach() {
         view = null
     }
 
-    private fun loadCurrentWeather(location: String) {
-        weatherModel.getCurrentWeather(location)
+    private fun loadCurrentWeather() {
+        val location = weatherModel.getSavedLocation()
+        weatherModel.getCurrentWeather(location.first, location.second)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.doOnSubscribe { view?.showProgress(true) }

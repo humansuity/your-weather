@@ -1,9 +1,9 @@
 package com.humansuit.yourweather.view.forecast
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.humansuit.yourweather.R
@@ -11,10 +11,8 @@ import com.humansuit.yourweather.databinding.FragmentForecastBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.model.data.ForecastSection
 import com.humansuit.yourweather.network.OpenWeatherService
-import com.humansuit.yourweather.network.data.forecast.ForecastListItem
 import com.humansuit.yourweather.utils.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
-import com.humansuit.yourweather.utils.requestLocation
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,8 +28,8 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setPresenter(ForecastPresenter(this, WeatherModel(getWeatherApi())))
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        setPresenter(ForecastPresenter(this, WeatherModel(getWeatherApi(), sharedPreferences)))
         presenter.onViewCreated()
     }
 
