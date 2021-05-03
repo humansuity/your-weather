@@ -1,5 +1,7 @@
 package com.humansuit.yourweather.network.data.forecast
 
+import com.squareup.moshi.Json
+
 data class FiveDayForecastResponse(
-    val forecastList: List<ForecastListItem>
+        @field:Json(name = "list") val forecastList: List<ForecastListItem>
 )

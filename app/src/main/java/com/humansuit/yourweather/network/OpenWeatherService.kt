@@ -19,7 +19,8 @@ interface OpenWeatherService {
     @GET("forecast?appid=$apikey")
     fun getFiveDayForecast(
         @Query("q") location: String,
-        @Query("cnt") timestamps: Int
+        @Query("cnt") timestamps: Int,
+        @Query("units") units: String
     ) : Single<FiveDayForecastResponse>
 
 }

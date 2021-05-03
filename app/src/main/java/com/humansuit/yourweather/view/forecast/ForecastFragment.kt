@@ -1,6 +1,7 @@
 package com.humansuit.yourweather.view.forecast
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,8 @@ import com.humansuit.yourweather.model.data.ForecastSection
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.forecast.ForecastListItem
 import com.humansuit.yourweather.utils.MainContract
+import com.humansuit.yourweather.utils.OPEN_WEATHER_API
+import com.humansuit.yourweather.utils.requestLocation
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,27 +26,13 @@ import java.util.concurrent.TimeUnit
 class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
 
     val viewBinding: FragmentForecastBinding by viewBinding()
+    private lateinit var presenter: MainContract.Presenter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weekDay = ForecastSection.WeekDay("TODAY")
-        val weatherState = ForecastSection.WeatherState("13:00", "Sunny", "22°", R.drawable.ic_sun)
-        val forecastList = mutableListOf<ForecastSection>()
-        forecastList.add(weekDay)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weekDay)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-        forecastList.add(weatherState)
-
         setPresenter(ForecastPresenter(this, WeatherModel(getWeatherApi())))
+        presenter.onViewCreated()
     }
 
     override fun updateForecastList(forecastList: List<ForecastSection>) {
@@ -54,11 +43,11 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
     }
 
     override fun setPresenter(presenter: MainContract.Presenter) {
-        TODO("Not yet implemented")
+        this.presenter = presenter
     }
 
     override fun showProgress(show: Boolean) {
-        TODO("Not yet implemented")
+
     }
 
 
@@ -75,7 +64,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://api.openweathermap.org/data/2.5/")
+            .baseUrl(OPEN_WEATHER_API)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())

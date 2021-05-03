@@ -11,7 +11,9 @@ data class MainWeatherState (
     @field:Json(name = "pressure") private val pressure : String,
     @field:Json(name = "humidity") private val humidity : String
 ) {
-    fun getRoundedTemperature() = temperature.roundToInt().toString() + " °C"
+    fun getTemperature() = temperature.roundToInt().toString()
+    fun getTemperatureWithCelsiumMark() = getTemperature() + " °C"
+    fun getTemperatureWithMark() = getTemperature() + "°"
     fun getHumidity() = "$humidity%"
     fun getPressure() = "$pressure hPa"
 }

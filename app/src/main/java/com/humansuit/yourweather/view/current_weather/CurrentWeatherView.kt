@@ -5,5 +5,4 @@ import com.humansuit.yourweather.network.data.current_weather.WeatherStateRespon
 
 interface CurrentWeatherView : MainContract.View<MainContract.Presenter> {
     fun showWeatherState(weatherState: WeatherStateResponse)
-    fun showProgress(show: Boolean)
 }

@@ -1,8 +1,9 @@
 package com.humansuit.yourweather.view.forecast
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
 import com.humansuit.yourweather.utils.MainContract
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -29,8 +30,12 @@ class ForecastPresenter(view: ForecastView,
             ?.doOnSubscribe { view?.showProgress(true) }
             ?.doFinally { view?.showProgress(false) }
             ?.subscribe(object: DisposableSingleObserver<FiveDayForecastResponse>() {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onSuccess(response: FiveDayForecastResponse?) {
-                    TODO("Not yet implemented")
+                    response?.forecastList?.let {
+                        val forecastSectionList = model.getParsedForecast(response.forecastList)
+                        view?.updateForecastList(forecastSectionList)
+                    }
                 }
 
                 override fun onError(e: Throwable?) {

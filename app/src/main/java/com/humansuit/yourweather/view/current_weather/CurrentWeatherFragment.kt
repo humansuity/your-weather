@@ -1,6 +1,7 @@
 package com.humansuit.yourweather.view.current_weather
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -11,6 +12,8 @@ import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
+import com.humansuit.yourweather.utils.OPEN_WEATHER_API
+import com.humansuit.yourweather.utils.requestLocation
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,7 +28,9 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.requestLocation {
+            Log.e("Location", "LOCATION IS: ${it?.longitude}")
+        }
         setPresenter(CurrentWeatherPresenter(this, WeatherModel(getWeatherApi())))
         presenter.onViewCreated()
     }
@@ -38,7 +43,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
             windDirectionText.text = "SE"
             rainfallText.text = weatherState.rain?.getOneHourRainfall() ?: "0.0 mm"
         }
-        viewBinding.degree.text = weatherState.mainWeatherState.getRoundedTemperature()
+        viewBinding.degree.text = weatherState.mainWeatherState.getTemperatureWithCelsiumMark()
         viewBinding.weatherState.text = weatherState.weather[0].main
     }
 
@@ -69,7 +74,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://api.openweathermap.org/data/2.5/")
+            .baseUrl(OPEN_WEATHER_API)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
