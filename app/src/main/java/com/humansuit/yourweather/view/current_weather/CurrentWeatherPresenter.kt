@@ -1,13 +1,12 @@
 package com.humansuit.yourweather.view.current_weather
 
 import android.util.Log
-import com.humansuit.yourweather.MainContract
+import com.humansuit.yourweather.utils.MainContract
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.network.data.WeatherStateResponse
+import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class CurrentWeatherPresenter(view: CurrentWeatherView,
                               private val weatherModel: WeatherModel)
@@ -29,8 +28,8 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
             ?.doOnSubscribe { view?.showProgress(true) }
             ?.doFinally { view?.showProgress(false) }
             ?.subscribe(object: DisposableSingleObserver<WeatherStateResponse>() {
-                override fun onSuccess(value: WeatherStateResponse?) {
-                    value?.let { view?.showWeatherState(it) }
+                override fun onSuccess(response: WeatherStateResponse?) {
+                    response?.let { view?.showWeatherState(it) }
                     Log.d("Network", "Got success result from openweatherapi.com!")
                 }
 

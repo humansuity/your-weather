@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.network.data
+package com.humansuit.yourweather.network.data.current_weather
 
 import com.squareup.moshi.Json
 import kotlin.math.roundToInt

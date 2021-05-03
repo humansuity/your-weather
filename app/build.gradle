@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -34,6 +36,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    kapt {
+        correctErrorTypes true
+    }
 }
 
 dependencies {
@@ -64,4 +69,7 @@ dependencies {
 
     /* VIEWBINDING PROPERTY DELEGATE */
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.4'
+
+    implementation 'com.google.dagger:hilt-android:2.35.1'
+    kapt 'com.google.dagger:hilt-compiler:2.35.1'
 }

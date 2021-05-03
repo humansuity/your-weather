@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_current_weather, R.id.navigation_forecast))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-
     }
+
 }

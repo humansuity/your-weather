@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.humansuit.yourweather.databinding.ItemWeatherStateBinding
 import com.humansuit.yourweather.databinding.ItemWeekdayBinding
 import com.humansuit.yourweather.model.data.ForecastSection
+import com.humansuit.yourweather.utils.BaseViewHolder
 
 class ForecastListAdapter(private val forecastSectionList: List<ForecastSection>)
     : RecyclerView.Adapter<BaseViewHolder<*>>() {

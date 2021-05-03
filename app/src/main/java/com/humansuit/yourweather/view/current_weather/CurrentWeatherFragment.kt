@@ -3,15 +3,14 @@ package com.humansuit.yourweather.view.current_weather
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.humansuit.yourweather.R
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.humansuit.yourweather.MainContract
+import com.humansuit.yourweather.utils.MainContract
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.network.OpenWeatherService
-import com.humansuit.yourweather.network.data.WeatherStateResponse
+import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

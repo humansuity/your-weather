@@ -1,7 +1,5 @@
-package com.humansuit.yourweather.view.adapter
+package com.humansuit.yourweather.utils
 
-import android.view.View
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 

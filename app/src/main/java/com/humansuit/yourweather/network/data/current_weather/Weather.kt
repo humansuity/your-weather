@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.network.data
+package com.humansuit.yourweather.network.data.current_weather
 
 data class Weather (
     val id : Int,
