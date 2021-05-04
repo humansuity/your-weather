@@ -14,4 +14,5 @@
 
     <color name="textOnPrimaryHighEmphasis">#ffffff</color>
     <color name="textOnPrimaryMediumEmphasis">#B3FFFFFF</color>
+    <color name="dotted_view_color">#C1C1C1</color>
 </resources>
