@@ -8,7 +8,8 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
@@ -19,6 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.humansuit.yourweather.utils.showErrorScreen
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,14 +28,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navView: BottomNavigationView
     private lateinit var navController: NavController
 
+    private val loadFragmentsWithLocation: (Location) -> Unit = { location ->
+        saveLastLocation(location)
+        setupNavView()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         navView = findViewById(R.id.nav_view)
-        navController = findNavController(R.id.nav_host_fragment)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
-        requestNewLocationData()
+        getLastLocation(
+                onSuccess = { location -> loadFragmentsWithLocation(location) },
+                onFailure = { showErrorScreen("Location is not available, please turn it on") }
+        )
     }
+
+    private fun showProgressBar(show: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -41,43 +57,59 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        getLastLocation()
+        when(requestCode) {
+            100 -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLastLocation(
+                            onSuccess = { location -> loadFragmentsWithLocation(location) },
+                            onFailure = { showErrorScreen("Location is not available, please turn it on") }
+                    )
+                } else showErrorScreen("Permissions is not granted")
+            }
+        }
     }
 
 
-    private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
-            100
-        )
+    private fun saveLastLocation(location: Location) {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        editor.putString("latitude", location.latitude.toString())
+        editor.putString("longitude", location.longitude.toString())
+        editor.commit()
     }
+
+
+    private fun setupNavView() {
+        navController = findNavController(R.id.nav_host_fragment)
+        navController.setGraph(R.navigation.mobile_navigation)
+        val appBarConfiguration = AppBarConfiguration(setOf(
+                R.id.navigation_current_weather, R.id.navigation_forecast))
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+    }
+
 
     @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
+    private fun getLastLocation(onSuccess: (location: Location) -> Unit, onFailure: () -> Unit) {
+        showProgressBar(show = true)
         if (checkPermissions()) {
-            if (isLocationEnabled()) {
+            if (isLocationEnabled())
                 fusedLocationClient.lastLocation.addOnCompleteListener { task ->
-                    var location =  task.result
-                    if (location == null) {
-                        requestNewLocationData()
-                    } else {
-                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                        val editor = sharedPreferences.edit()
-                        editor.putString("latitude", location.latitude.toString())
-                        editor.putString("longitude", location.longitude.toString())
-                        editor.commit()
-
-                        val appBarConfiguration = AppBarConfiguration(setOf(
-                            R.id.navigation_current_weather, R.id.navigation_forecast))
-                        setupActionBarWithNavController(navController, appBarConfiguration)
-                        navView.setupWithNavController(navController)
+                    val location = task.result
+                    if (location == null) requestNewLocationData()
+                    else {
+                        onSuccess(location)
+                        showProgressBar(show = false)
                     }
                 }
-            } else {
-                // enable location
+            else {
+                onFailure()
+                showProgressBar(show = false)
             }
-        } else requestPermissions()
+        } else {
+            showProgressBar(show = false)
+            requestPermissions()
+        }
     }
 
     private fun checkPermissions(): Boolean {
@@ -89,9 +121,7 @@ class MainActivity : AppCompatActivity() {
                 applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
+        ) return true
         return false
     }
 
@@ -106,19 +136,8 @@ class MainActivity : AppCompatActivity() {
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val editor = sharedPreferences.edit()
-            editor.putString("latitude", mLastLocation.latitude.toString())
-            editor.putString("longitude", mLastLocation.longitude.toString())
-            editor.commit()
-
-            Log.e("Location", "${mLastLocation.latitude}, ${mLastLocation.longitude}")
-
-            val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_current_weather, R.id.navigation_forecast))
-            setupActionBarWithNavController(navController, appBarConfiguration)
-            navView.setupWithNavController(navController)
+            val mLastLocation: Location = locationResult.lastLocation
+            loadFragmentsWithLocation(mLastLocation)
         }
     }
 
@@ -134,6 +153,16 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient.requestLocationUpdates(
             mLocationRequest, mLocationCallback,
             Looper.myLooper()
+        )
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                100
         )
     }
 

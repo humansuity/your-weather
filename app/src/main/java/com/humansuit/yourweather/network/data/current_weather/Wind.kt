@@ -8,4 +8,5 @@ data class Wind(
     @field:Json(name = "deg") val degree: Int
 ) {
     fun getRoundedSpeed() = speed.roundToInt().toString() + " km/h"
+    fun getWindDirection() = ""
 }

@@ -7,4 +7,6 @@ data class WeatherStateResponse(
     val wind: Wind,
     val weather: List<Weather>,
     val rain: Rain?
-)
+) {
+    fun getNullRainfall() = "0.0 mm"
+}

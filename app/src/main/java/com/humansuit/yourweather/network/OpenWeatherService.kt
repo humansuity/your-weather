@@ -12,14 +12,15 @@ interface OpenWeatherService {
 
     @GET("weather?appid=$apikey")
     fun getCurrentWeatherData(
-        @Query("lat") latitude: Int,
-        @Query("lon") longitude: Int,
+        @Query("lat") latitude: Float,
+        @Query("lon") longitude: Float,
         @Query("units") units: String
     ) : Single<WeatherStateResponse>
 
     @GET("forecast?appid=$apikey")
     fun getFiveDayForecast(
-        @Query("q") location: String,
+        @Query("lat") latitude: Float,
+        @Query("lon") longitude: Float,
         @Query("cnt") timestamps: Int,
         @Query("units") units: String
     ) : Single<FiveDayForecastResponse>

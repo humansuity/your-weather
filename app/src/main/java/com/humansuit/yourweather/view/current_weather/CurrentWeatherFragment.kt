@@ -1,20 +1,22 @@
 package com.humansuit.yourweather.view.current_weather
 
-import android.content.SharedPreferences
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.humansuit.yourweather.R
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.humansuit.yourweather.utils.MainContract
+import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
+import com.humansuit.yourweather.model.data.CurrentWeatherState
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
+import com.humansuit.yourweather.utils.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
+import com.humansuit.yourweather.utils.showErrorScreen
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -32,28 +34,33 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        weatherModel = WeatherModel(getWeatherApi(), sharedPreferences)
+        weatherModel = WeatherModel(getWeatherApi(), sharedPreferences, Geocoder(requireContext(), Locale.getDefault()))
+        initUiComponents()
         setPresenter(CurrentWeatherPresenter(this, weatherModel))
         presenter.onViewCreated()
     }
 
-
-    override fun showWeatherState(weatherState: WeatherStateResponse) {
+    override fun showWeatherState(weatherState: CurrentWeatherState) {
         with(viewBinding.weatherWidgetContainer) {
-            humidityText.text = weatherState.mainWeatherState.getHumidity()
-            pressureText.text = weatherState.mainWeatherState.getPressure()
-            windSpeedText.text = weatherState.wind.getRoundedSpeed()
-            windDirectionText.text = "SE"
-            rainfallText.text = weatherState.rain?.getOneHourRainfall() ?: "0.0 mm"
+            humidityText.text = weatherState.humidity
+            pressureText.text = weatherState.pressure
+            windSpeedText.text = weatherState.windSpeed
+            windDirectionText.text = weatherState.windDirection
+            rainfallText.text = weatherState.rainfall
         }
-        viewBinding.degree.text = weatherState.mainWeatherState.getTemperatureWithCelsiumMark()
-        viewBinding.weatherState.text = weatherState.weather[0].main
-        viewBinding.currentLocation.text =
-            weatherModel.getCityNameByLocation(Geocoder(requireContext(), Locale.getDefault()))
+        with(viewBinding) {
+            temperature.text = weatherState.temperature
+            this.weatherState.text = weatherState.weatherState
+            currentLocation.text = weatherState.location
+        }
+    }
+
+    override fun showErrorScreen(error: String) {
+        requireActivity().showErrorScreen(error)
     }
 
     override fun showProgress(show: Boolean) {
-        val progressBar = activity?.findViewById<ProgressBar>(R.id.progressBar)
+        val progressBar = requireActivity().findViewById<ProgressBar>(R.id.progressBar)
         progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
     }
 
@@ -64,6 +71,48 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
     override fun onDetach() {
         presenter.onViewDetach()
         super.onDetach()
+    }
+
+
+
+    private fun initUiComponents() {
+        viewBinding.shareButton.setOnClickListener { onShareButtonClick() }
+    }
+
+
+    private fun onShareButtonClick() {
+        val currentWeatherState = getCurrentWeatherState()
+        shareTextWeather(currentWeatherState.toString())
+    }
+
+
+    private fun shareTextWeather(textWeatherState: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, textWeatherState)
+            type = "text/plain"
+        }
+        val chooserIntent = Intent.createChooser(
+            shareIntent,
+            "Select an app you want to share weather"
+        )
+        startActivity(chooserIntent)
+    }
+
+
+    private fun getCurrentWeatherState(): CurrentWeatherState {
+        with(viewBinding) {
+            return CurrentWeatherState(
+                location = currentLocation.text as String,
+                weatherState = weatherState.text as String,
+                humidity = weatherWidgetContainer.humidityText.text as String,
+                pressure = weatherWidgetContainer.pressureText.text as String,
+                temperature = temperature.text as String,
+                windSpeed = weatherWidgetContainer.windSpeedText.text as String,
+                windDirection = weatherWidgetContainer.windDirectionText.text as String,
+                rainfall = weatherWidgetContainer.rainfallText.text as String,
+            )
+        }
     }
 
 
@@ -88,8 +137,5 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
         return retrofit.create(OpenWeatherService::class.java)
     }
-
-
-
 
 }

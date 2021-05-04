@@ -11,19 +11,19 @@ import com.humansuit.yourweather.network.data.forecast.ForecastListItem
 import io.reactivex.rxjava3.core.Single
 import java.lang.IllegalStateException
 import java.util.*
-import kotlin.math.roundToInt
 
 class WeatherModel(
     private val weatherApi: OpenWeatherService?,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val geocoder: Geocoder
 ) {
 
-    fun getCurrentWeather(latitude: Int, longitude: Int, units: String = "metric"): Single<WeatherStateResponse>? {
+    fun getCurrentWeather(latitude: Float, longitude: Float, units: String = "metric"): Single<WeatherStateResponse>? {
         return weatherApi?.getCurrentWeatherData(latitude, longitude, units)
     }
 
-    fun getFiveDayForecast(location: String = "Minsk", timestamps: Int = 40, units: String = "metric"): Single<FiveDayForecastResponse>? {
-        return weatherApi?.getFiveDayForecast(location, timestamps, units)
+    fun getFiveDayForecast(latitude: Float, longitude: Float, timestamps: Int = 40, units: String = "metric"): Single<FiveDayForecastResponse>? {
+        return weatherApi?.getFiveDayForecast(latitude, longitude, timestamps, units)
     }
 
     fun getParsedForecast(forecastList: List<ForecastListItem>): List<ForecastSection> {
@@ -31,15 +31,15 @@ class WeatherModel(
         return getForecastSectionList(dailyForecastList)
     }
 
-    fun getSavedLocation(): Pair<Int, Int> {
+    fun getSavedLocation(): Pair<Float, Float> {
         if (sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude")) {
-            val latitude = sharedPreferences.getString("latitude", "0")?.toFloat()!!.roundToInt()
-            val longitude = sharedPreferences.getString("longitude", "0")?.toFloat()!!.roundToInt()
+            val latitude = sharedPreferences.getString("latitude", "0")?.toFloat()!!
+            val longitude = sharedPreferences.getString("longitude", "0")?.toFloat()!!
             return Pair(latitude, longitude)
-        } else throw IllegalStateException("")
+        } else throw IllegalStateException("Something went wrong!")
     }
 
-    fun getCityNameByLocation(geocoder: Geocoder) : String {
+    fun getCityNameByLocation() : String {
         val location = getSavedLocation()
         val addressesList = geocoder.getFromLocation(
             location.first.toDouble(),
