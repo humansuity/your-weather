@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.humansuit.yourweather.databinding.ItemWeatherStateBinding
 import com.humansuit.yourweather.databinding.ItemWeekdayBinding
-import com.humansuit.yourweather.model.data.ForecastSection
+import com.humansuit.yourweather.view.data.ForecastSection
 import com.humansuit.yourweather.utils.BaseViewHolder
 import com.humansuit.yourweather.utils.TYPE_WEATHER_STATE
 import com.humansuit.yourweather.utils.TYPE_WEEKDAY

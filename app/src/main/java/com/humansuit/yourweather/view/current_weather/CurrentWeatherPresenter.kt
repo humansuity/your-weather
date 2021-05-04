@@ -1,8 +1,8 @@
 package com.humansuit.yourweather.view.current_weather
 
-import com.humansuit.yourweather.utils.MainContract
+import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.model.data.CurrentWeatherState
+import com.humansuit.yourweather.view.data.CurrentWeatherState
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableSingleObserver

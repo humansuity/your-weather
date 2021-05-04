@@ -1,4 +1,4 @@
-package com.humansuit.yourweather
+package com.humansuit.yourweather.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -18,12 +18,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.humansuit.yourweather.R
+import com.humansuit.yourweather.databinding.ActivityMainBinding
 import com.humansuit.yourweather.utils.showErrorScreen
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
+    private val viewBinding: ActivityMainBinding by viewBinding(R.id.container)
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var navView: BottomNavigationView
     private lateinit var navController: NavController
@@ -33,10 +37,8 @@ class MainActivity : AppCompatActivity() {
         setupNavView()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         navView = findViewById(R.id.nav_view)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
         getLastLocation(
@@ -45,10 +47,8 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun showProgressBar(show: Boolean) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
-    }
+
+
 
 
     override fun onRequestPermissionsResult(
@@ -70,6 +70,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun showProgressBar(show: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
+    }
+
+
     private fun saveLastLocation(location: Location) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = sharedPreferences.edit()
@@ -80,12 +86,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupNavView() {
+        setSupportActionBar(viewBinding.toolBar)
         navController = findNavController(R.id.nav_host_fragment)
         navController.setGraph(R.navigation.mobile_navigation)
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_current_weather, R.id.navigation_forecast))
-        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { controller, _, _ ->
+            viewBinding.toolBarText.text = controller.currentDestination?.label
+        }
     }
 
 

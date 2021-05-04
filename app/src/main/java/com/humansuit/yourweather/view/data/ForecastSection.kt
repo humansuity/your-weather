@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.model.data
+package com.humansuit.yourweather.view.data
 
 sealed class ForecastSection {
 

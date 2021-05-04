@@ -11,11 +11,11 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.model.data.CurrentWeatherState
+import com.humansuit.yourweather.view.data.CurrentWeatherState
 import com.humansuit.yourweather.network.OpenWeatherService
-import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
-import com.humansuit.yourweather.utils.MainContract
+import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
+import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.utils.showErrorScreen
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,12 +29,14 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
     private val viewBinding: FragmentCurrentWeatherBinding by viewBinding()
     private lateinit var presenter: MainContract.Presenter
-    private lateinit var weatherModel: WeatherModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        weatherModel = WeatherModel(getWeatherApi(), sharedPreferences, Geocoder(requireContext(), Locale.getDefault()))
+        val weatherModel = WeatherModel(
+            getWeatherApi(), sharedPreferences,
+            Geocoder(requireContext(), Locale.getDefault())
+        )
         initUiComponents()
         setPresenter(CurrentWeatherPresenter(this, weatherModel))
         presenter.onViewCreated()
@@ -52,6 +54,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
             temperature.text = weatherState.temperature
             this.weatherState.text = weatherState.weatherState
             currentLocation.text = weatherState.location
+            weatherStateIcon.setImageResource(getWeatherStateIcon(weatherState.weatherState))
         }
     }
 

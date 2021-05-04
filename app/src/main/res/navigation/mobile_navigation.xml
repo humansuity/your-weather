@@ -16,5 +16,10 @@
         android:name="com.humansuit.yourweather.view.forecast.ForecastFragment"
         android:label="@string/title_forecast"
         tools:layout="@layout/fragment_forecast" />
+    <fragment
+        android:id="@+id/errorStateFragment"
+        android:name="com.humansuit.yourweather.view.ErrorStateFragment"
+        android:label="ErrorStateFragment"
+        tools:layout="@layout/fragment_error_state"/>
 
 </navigation>

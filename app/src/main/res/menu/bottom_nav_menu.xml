@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_current_weather"
-        android:icon="@drawable/ic_sun"
+        android:icon="@drawable/ic_sun_state"
         android:title="@string/title_today_weather" />
 
     <item
