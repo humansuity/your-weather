@@ -17,6 +17,7 @@ import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.utils.showErrorScreen
+import com.humansuit.yourweather.view.data.ErrorState
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -58,24 +59,26 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         }
     }
 
-    override fun showErrorScreen(error: String) {
-        requireActivity().showErrorScreen(error)
-    }
 
     override fun showProgress(show: Boolean) {
         val progressBar = requireActivity().findViewById<ProgressBar>(R.id.progressBar)
         progressBar?.visibility = if(show) View.VISIBLE else View.INVISIBLE
     }
 
+
+    override fun showErrorScreen(error: ErrorState) {
+        requireActivity().showErrorScreen(error)
+    }
+
     override fun setPresenter(presenter: MainContract.Presenter) {
         this.presenter = presenter
     }
+
 
     override fun onDetach() {
         presenter.onViewDetach()
         super.onDetach()
     }
-
 
 
     private fun initUiComponents() {

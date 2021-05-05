@@ -19,6 +19,7 @@ import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.showErrorScreen
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
+import com.humansuit.yourweather.view.data.ErrorState
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -55,7 +56,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
         progressBar?.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 
-    override fun showErrorScreen(error: String) {
+    override fun showErrorScreen(error: ErrorState) {
         requireActivity().showErrorScreen(error)
     }
 

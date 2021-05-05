@@ -1,6 +1,7 @@
 package com.humansuit.yourweather.view
 
 import android.content.SharedPreferences
+import com.humansuit.yourweather.view.data.ErrorState
 import java.lang.IllegalStateException
 
 interface MainContract {
@@ -8,7 +9,7 @@ interface MainContract {
     interface View<T> {
         fun setPresenter(presenter: T)
         fun showProgress(show: Boolean)
-        fun showErrorScreen(error: String)
+        fun showErrorScreen(error: ErrorState)
     }
 
     interface Presenter {
