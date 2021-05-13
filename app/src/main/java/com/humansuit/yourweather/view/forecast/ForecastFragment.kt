@@ -1,5 +1,6 @@
 package com.humansuit.yourweather.view.forecast
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
@@ -80,6 +81,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
             .build()
 
         return retrofit.create(OpenWeatherService::class.java)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
     }
 
 }

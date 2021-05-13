@@ -1,26 +1,25 @@
 package com.humansuit.yourweather.view
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.*
 import com.humansuit.yourweather.R
-import com.humansuit.yourweather.databinding.ActivityMainBinding
-import com.humansuit.yourweather.utils.getLastLocation
-import com.humansuit.yourweather.utils.saveLastLocation
-import com.humansuit.yourweather.utils.setupNavView
-import com.humansuit.yourweather.utils.showErrorScreen
+import com.humansuit.yourweather.utils.*
+import com.humansuit.yourweather.utils.LocationListener
 import com.humansuit.yourweather.view.data.ErrorState
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
-
-    private val viewBinding: ActivityMainBinding by viewBinding(R.id.container)
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener {
 
     private val loadFragmentsWithLocation: (Location) -> Unit = { location ->
         saveLastLocation(location, applicationContext)
@@ -34,10 +33,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
         getLastLocation(
             onSuccess = { location -> loadFragmentsWithLocation(location) },
             onFailure = { showErrorScreen(ErrorState("Location is not available, please turn it on", R.drawable.ic_location)) },
@@ -63,6 +61,91 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 } else showErrorScreen(ErrorState("Permissions is not granted", R.drawable.ic_permissions))
             }
         }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    override fun getLastLocation(
+        onSuccess: (location: Location) -> Unit,
+        onFailure: () -> Unit,
+        onNewLocationRequested: LocationCallback
+    ) {
+        showProgressBar(show = true)
+        if (checkPermissions()) {
+            if (isLocationEnabled())
+                LocationServices.getFusedLocationProviderClient(applicationContext)
+                    .lastLocation.addOnCompleteListener { task ->
+                        val location = task.result
+                        if (location == null) requestNewLocationData(onNewLocationRequested)
+                        else {
+                            onSuccess(location)
+                            showProgressBar(show = false)
+                        }
+                    }
+            else {
+                onFailure()
+                showProgressBar(show = false)
+            }
+        } else {
+            showProgressBar(show = false)
+            requestPermissions()
+        }
+    }
+
+
+    private fun showProgressBar(show: Boolean) {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        progressBar?.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    }
+
+
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) return true
+        return false
+    }
+
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            100
+        )
+    }
+
+
+    @SuppressLint("MissingPermission")
+    fun requestNewLocationData(locationCallback: LocationCallback) {
+        val mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = 0
+        mLocationRequest.fastestInterval = 0
+        mLocationRequest.numUpdates = 1
+        LocationServices.getFusedLocationProviderClient(this)
+            .requestLocationUpdates(
+                mLocationRequest, locationCallback,
+                Looper.myLooper()
+            )
     }
 
 }

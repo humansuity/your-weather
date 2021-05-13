@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/errorStateFragment"
-        android:name="com.humansuit.yourweather.view.ErrorStateFragment"
+        android:name="com.humansuit.yourweather.view.error_state.ErrorStateFragment"
         android:label="Error"
         tools:layout="@layout/fragment_error_state" />
 </navigation>

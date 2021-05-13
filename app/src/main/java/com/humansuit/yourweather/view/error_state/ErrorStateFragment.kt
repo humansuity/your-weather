@@ -1,6 +1,6 @@
-package com.humansuit.yourweather.view
+package com.humansuit.yourweather.view.error_state
 
-import android.location.Location
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,11 +13,14 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.material.snackbar.Snackbar
 import com.humansuit.yourweather.R
-import com.humansuit.yourweather.utils.getLastLocation
+import com.humansuit.yourweather.utils.LocationListener
 import com.humansuit.yourweather.utils.setupNavView
 import com.humansuit.yourweather.view.data.ErrorState
+import java.lang.ClassCastException
 
 class ErrorStateFragment : Fragment(R.layout.fragment_error_state) {
+
+    private lateinit var mLocationListener: LocationListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,7 +33,7 @@ class ErrorStateFragment : Fragment(R.layout.fragment_error_state) {
 
         val retryButton = view.findViewById<Button>(R.id.retryButton)
         retryButton.setOnClickListener {
-            requireActivity().getLastLocation(
+            mLocationListener.getLastLocation(
                 onSuccess = { loadMainNavGraph() },
                 onFailure = { showSnackbar(view) },
                 onNewLocationRequested = mLocationCallback
@@ -38,9 +41,14 @@ class ErrorStateFragment : Fragment(R.layout.fragment_error_state) {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try { mLocationListener = context as LocationListener }
+        catch (e: ClassCastException) {  }
+    }
+
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation: Location = locationResult.lastLocation
             loadMainNavGraph()
         }
     }

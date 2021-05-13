@@ -18,6 +18,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
     buildFeatures {
         viewBinding true
     }
@@ -74,7 +75,7 @@ dependencies {
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.4.4'
 
 
-    /* DAGGER */
+    /* DAGGER HILT */
     implementation 'com.google.dagger:hilt-android:2.35.1'
     kapt 'com.google.dagger:hilt-compiler:2.35.1'
 
