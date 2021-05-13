@@ -2,7 +2,6 @@ package com.humansuit.yourweather.view
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -13,17 +12,25 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.*
 import com.humansuit.yourweather.R
+import com.humansuit.yourweather.databinding.ActivityMainBinding
 import com.humansuit.yourweather.utils.*
 import com.humansuit.yourweather.utils.LocationListener
 import com.humansuit.yourweather.view.data.ErrorState
+import by.kirich1409.viewbindingdelegate.viewBinding
+
 
 class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener {
 
+    private val viewBinding by viewBinding(ActivityMainBinding::bind, R.id.container)
+
     private val loadFragmentsWithLocation: (Location) -> Unit = { location ->
         saveLastLocation(location, applicationContext)
-        setupNavView()
+        setupMainNavGraph()
+        initUiComponents()
     }
 
     private val mLocationCallback = object : LocationCallback() {
@@ -76,11 +83,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
                 LocationServices.getFusedLocationProviderClient(applicationContext)
                     .lastLocation.addOnCompleteListener { task ->
                         val location = task.result
-                        if (location == null) requestNewLocationData(onNewLocationRequested)
-                        else {
+                        if (location != null) {
                             onSuccess(location)
                             showProgressBar(show = false)
                         }
+                        else requestNewLocationData(onNewLocationRequested)
                     }
             else {
                 onFailure()
@@ -93,9 +100,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
     }
 
 
+    private fun initUiComponents() {
+        val navController = findNavController(R.id.nav_host_fragment)
+        setSupportActionBar(viewBinding.toolBar)
+        viewBinding.navView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { controller, _, _ ->
+            viewBinding.toolBarText.text = controller.currentDestination?.label
+        }
+    }
+
+
+    private fun setupMainNavGraph() {
+        val navController = findNavController(R.id.nav_host_fragment)
+        navController.setGraph(R.navigation.main_app_nav_graph)
+    }
+
+
     private fun showProgressBar(show: Boolean) {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        progressBar?.visibility = if (show) View.VISIBLE else View.INVISIBLE
+        viewBinding.progressBar.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 
 
@@ -115,9 +137,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
+                getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER
         )
     }
 

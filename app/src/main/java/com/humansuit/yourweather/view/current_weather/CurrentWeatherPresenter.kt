@@ -1,5 +1,6 @@
 package com.humansuit.yourweather.view.current_weather
 
+import android.util.Log
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.model.WeatherModel
@@ -22,6 +23,7 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
 
     override fun onViewDetach() {
         view = null
+        Log.e("Lifecycle", "OnViewDetached called in CurrentWeatherPresenter")
     }
 
     private fun loadCurrentWeather() {

@@ -1,5 +1,6 @@
 package com.humansuit.yourweather.view.forecast
 
+import android.util.Log
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.model.ForecastWeatherModel
 import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
@@ -9,6 +10,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.lang.IllegalStateException
+import java.util.concurrent.TimeUnit
 
 class ForecastPresenter(
     view: ForecastView,
@@ -23,6 +25,7 @@ class ForecastPresenter(
 
     override fun onViewDetach() {
         view = null
+        Log.e("Lifecycle", "OnViewDetached called in ForecastPresenter")
     }
 
     private fun loadFiveDayForecast() {
@@ -30,6 +33,7 @@ class ForecastPresenter(
             val location = forecastWeatherModel.getSavedLocation()
             forecastWeatherModel.getFiveDayForecast(location.first, location.second)
                 ?.subscribeOn(Schedulers.io())
+                ?.delay(5000L, TimeUnit.MILLISECONDS)
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.doOnSubscribe { view?.showProgress(true) }
                 ?.doFinally { view?.showProgress(false) }

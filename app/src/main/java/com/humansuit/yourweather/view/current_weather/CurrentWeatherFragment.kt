@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), CurrentWeatherView {
 
     private val viewBinding: FragmentCurrentWeatherBinding by viewBinding()
-    private lateinit var presenter: MainContract.Presenter
+    private var presenter: MainContract.Presenter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,7 +40,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         )
         initUiComponents()
         setPresenter(CurrentWeatherPresenter(this, weatherModel))
-        presenter.onViewCreated()
+        presenter?.onViewCreated()
     }
 
     override fun showWeatherState(weatherState: CurrentWeatherState) {
@@ -76,8 +76,16 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
 
     override fun onDetach() {
-        presenter.onViewDetach()
+        presenter?.onViewDetach()
         super.onDetach()
+
+        /**
+         *
+         * Can't understand why this method called when you switch
+         * from ForecastFragment to this one. So that i must wrap presenter with nullable,
+         * otherwise the app keeps crashing because of nullable presenter.
+         *
+         */
     }
 
 

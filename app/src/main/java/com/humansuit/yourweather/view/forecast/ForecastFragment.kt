@@ -31,14 +31,14 @@ import java.util.concurrent.TimeUnit
 class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
 
     val viewBinding: FragmentForecastBinding by viewBinding()
-    private lateinit var presenter: MainContract.Presenter
+    private var presenter: MainContract.Presenter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val forecastWeatherModel = ForecastWeatherModel(getWeatherApi(), sharedPreferences)
         setPresenter(ForecastPresenter(this, forecastWeatherModel))
-        presenter.onViewCreated()
+        presenter?.onViewCreated()
     }
 
     override fun updateForecastList(forecastList: List<ForecastSection>) {
@@ -55,10 +55,16 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
     override fun showProgress(show: Boolean) {
         val progressBar = requireActivity().findViewById<ProgressBar>(R.id.progressBar)
         progressBar?.visibility = if (show) View.VISIBLE else View.INVISIBLE
+
     }
 
     override fun showErrorScreen(error: ErrorState) {
         requireActivity().showErrorScreen(error)
+    }
+
+    override fun onDetach() {
+        presenter?.onViewDetach()
+        super.onDetach()
     }
 
     private fun getWeatherApi(): OpenWeatherService? {
@@ -82,9 +88,4 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
 
         return retrofit.create(OpenWeatherService::class.java)
     }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
 }
