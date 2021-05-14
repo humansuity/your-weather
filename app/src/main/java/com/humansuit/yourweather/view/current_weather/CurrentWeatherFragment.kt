@@ -1,18 +1,23 @@
 package com.humansuit.yourweather.view.current_weather
 
+import android.content.Context
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.view.data.CurrentWeatherState
 import com.humansuit.yourweather.network.OpenWeatherService
+import com.humansuit.yourweather.utils.ActivityStateObserver
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.getWeatherStateIcon
@@ -30,6 +35,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
 
     private val viewBinding: FragmentCurrentWeatherBinding by viewBinding()
     private var presenter: MainContract.Presenter? = null
+    private var shareButton: Button? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,6 +47,27 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         initUiComponents()
         setPresenter(CurrentWeatherPresenter(this, weatherModel))
         presenter?.onViewCreated()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.lifecycle?.addObserver(
+            ActivityStateObserver(
+            onCreateStateCallback = { setEnableUi(enable = false) })
+        )
+    }
+
+    override fun onDetach() {
+        presenter?.onViewDetach()
+        super.onDetach()
+
+        /**
+         *
+         *     Can't understand why this method called when you switch
+         *     from ForecastFragment to this one. So that i must wrap presenter with nullable,
+         *     otherwise the app keeps crashing because of nullable presenter.
+         *
+         */
     }
 
     override fun showWeatherState(weatherState: CurrentWeatherState) {
@@ -59,6 +86,12 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         }
     }
 
+    override fun setEnableUi(enable: Boolean) {
+        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        navView.menu.forEach { it.isEnabled = enable }
+        shareButton?.isEnabled = enable
+    }
+
 
     override fun showProgress(show: Boolean) {
         val progressBar = requireActivity().findViewById<ProgressBar>(R.id.progressBar)
@@ -75,22 +108,9 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
     }
 
 
-    override fun onDetach() {
-        presenter?.onViewDetach()
-        super.onDetach()
-
-        /**
-         *
-         * Can't understand why this method called when you switch
-         * from ForecastFragment to this one. So that i must wrap presenter with nullable,
-         * otherwise the app keeps crashing because of nullable presenter.
-         *
-         */
-    }
-
-
     private fun initUiComponents() {
         viewBinding.shareButton.setOnClickListener { onShareButtonClick() }
+        shareButton = viewBinding.shareButton
     }
 
 

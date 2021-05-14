@@ -10,6 +10,7 @@ interface MainContract {
         fun setPresenter(presenter: T)
         fun showProgress(show: Boolean)
         fun showErrorScreen(error: ErrorState)
+        fun setEnableUi(enable: Boolean)
     }
 
     interface Presenter {

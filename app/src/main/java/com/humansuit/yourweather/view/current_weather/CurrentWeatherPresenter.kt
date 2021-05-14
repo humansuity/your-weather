@@ -8,6 +8,7 @@ import com.humansuit.yourweather.view.data.CurrentWeatherState
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
 import com.humansuit.yourweather.view.data.ErrorState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -15,6 +16,7 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
                               private val weatherModel: WeatherModel)
     : MainContract.Presenter {
 
+    private val disposable = CompositeDisposable()
     private var view: CurrentWeatherView? = view
 
     override fun onViewCreated() {
@@ -22,6 +24,7 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
     }
 
     override fun onViewDetach() {
+        disposable.dispose()
         view = null
         Log.e("Lifecycle", "OnViewDetached called in CurrentWeatherPresenter")
     }
@@ -29,12 +32,12 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
     private fun loadCurrentWeather() {
         try {
             val location = weatherModel.getSavedLocation()
-            weatherModel.getCurrentWeather(location.first, location.second)
+            disposable.add(weatherModel.getCurrentWeather(location.first, location.second)
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.doOnSubscribe { view?.showProgress(true) }
-                ?.doFinally { view?.showProgress(false) }
-                ?.subscribe(object: DisposableSingleObserver<WeatherStateResponse>() {
+                ?.doFinally { view?.showProgress(false); view?.setEnableUi(true) }
+                ?.subscribeWith(object: DisposableSingleObserver<WeatherStateResponse>() {
                     override fun onSuccess(response: WeatherStateResponse?) {
                         if (response != null) {
                             with(response) {
@@ -59,6 +62,7 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
                         else view?.showErrorScreen(ErrorState("Internet connection problem, check whether you connected to network", R.drawable.ic_no_internet_icon))
                     }
                 })
+            )
         } catch (e: IllegalStateException) {
             view?.showErrorScreen(ErrorState("Something went wrong", R.drawable.ic_error))
         }

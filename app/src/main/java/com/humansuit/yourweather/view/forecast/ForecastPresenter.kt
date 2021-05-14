@@ -7,16 +7,17 @@ import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.view.data.ErrorState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.lang.IllegalStateException
-import java.util.concurrent.TimeUnit
 
 class ForecastPresenter(
     view: ForecastView,
     private val forecastWeatherModel: ForecastWeatherModel
 ) : MainContract.Presenter {
 
+    private val disposable = CompositeDisposable()
     private var view: ForecastView? = view
 
     override fun onViewCreated() {
@@ -24,6 +25,7 @@ class ForecastPresenter(
     }
 
     override fun onViewDetach() {
+        disposable.dispose()
         view = null
         Log.e("Lifecycle", "OnViewDetached called in ForecastPresenter")
     }
@@ -31,13 +33,12 @@ class ForecastPresenter(
     private fun loadFiveDayForecast() {
         try {
             val location = forecastWeatherModel.getSavedLocation()
-            forecastWeatherModel.getFiveDayForecast(location.first, location.second)
+            disposable.add(forecastWeatherModel.getFiveDayForecast(location.first, location.second)
                 ?.subscribeOn(Schedulers.io())
-                ?.delay(5000L, TimeUnit.MILLISECONDS)
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.doOnSubscribe { view?.showProgress(true) }
-                ?.doFinally { view?.showProgress(false) }
-                ?.subscribe(object: DisposableSingleObserver<FiveDayForecastResponse>() {
+                ?.doOnSubscribe { view?.showProgress(true); }
+                ?.doFinally { view?.showProgress(false); view?.setEnableUi(true) }
+                ?.subscribeWith(object: DisposableSingleObserver<FiveDayForecastResponse>() {
                     override fun onSuccess(response: FiveDayForecastResponse?) {
                         if (response?.forecastList != null) {
                             val forecastSectionList = forecastWeatherModel.getParsedForecast(response.forecastList)
@@ -50,6 +51,7 @@ class ForecastPresenter(
                         else view?.showErrorScreen(ErrorState("Internet connection problem, check whether you connected to network", R.drawable.ic_no_internet_icon))
                     }
                 })
+            )
         } catch(e: IllegalStateException) {
             view?.showErrorScreen(ErrorState("Something went wrong", R.drawable.ic_error))
         }
