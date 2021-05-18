@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.utils
+package com.humansuit.yourweather.view.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding

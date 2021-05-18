@@ -3,7 +3,6 @@ package com.humansuit.yourweather.view.forecast
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ProgressBar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
@@ -20,8 +19,8 @@ import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.showErrorScreen
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
-import com.humansuit.yourweather.view.data.ErrorState
-import com.humansuit.yourweather.view.data.ForecastSection
+import com.humansuit.yourweather.model.data.ErrorState
+import com.humansuit.yourweather.model.data.ForecastSection
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

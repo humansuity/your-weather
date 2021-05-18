@@ -9,6 +9,10 @@ import java.lang.IllegalArgumentException
 const val TYPE_WEEKDAY = 0
 const val TYPE_WEATHER_STATE = 1
 
+const val KEY_PREFERENCES_LATITUDE = "LATITUDE"
+const val KEY_PREFERENCES_LONGITUDE = "LONGITUDE"
+const val KEY_BUNDLE_ERROR = "ERROR"
+
 const val OPEN_WEATHER_API = "http://api.openweathermap.org/data/2.5/"
 
 fun getWeatherStateIcon(weatherState: String) = try {
@@ -20,7 +24,7 @@ fun getWeatherStateIcon(weatherState: String) = try {
 fun saveLastLocation(location: Location, context: Context) {
     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     val editor = sharedPreferences.edit()
-    editor.putString("latitude", location.latitude.toString())
-    editor.putString("longitude", location.longitude.toString())
+    editor.putString(KEY_PREFERENCES_LATITUDE, location.latitude.toString())
+    editor.putString(KEY_PREFERENCES_LONGITUDE, location.longitude.toString())
     editor.commit()
 }

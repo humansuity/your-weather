@@ -15,14 +15,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.view.data.CurrentWeatherState
+import com.humansuit.yourweather.model.data.CurrentWeatherState
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.utils.ActivityStateObserver
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.utils.showErrorScreen
-import com.humansuit.yourweather.view.data.ErrorState
+import com.humansuit.yourweather.model.data.ErrorState
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -62,11 +62,9 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
         super.onDetach()
 
         /**
-         *
          *     Can't understand why this method called when you switch
          *     from ForecastFragment to this one. So that i must wrap presenter with nullable,
          *     otherwise the app keeps crashing because of nullable presenter :(
-         *
          */
     }
 

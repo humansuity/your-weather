@@ -1,7 +1,9 @@
 package com.humansuit.yourweather.view
 
 import android.content.SharedPreferences
-import com.humansuit.yourweather.view.data.ErrorState
+import com.humansuit.yourweather.utils.KEY_PREFERENCES_LATITUDE
+import com.humansuit.yourweather.utils.KEY_PREFERENCES_LONGITUDE
+import com.humansuit.yourweather.model.data.ErrorState
 import java.lang.IllegalStateException
 
 interface MainContract {
@@ -21,9 +23,10 @@ interface MainContract {
     abstract class Model(private val sharedPreferences: SharedPreferences) {
 
         fun getSavedLocation(): Pair<Float, Float> {
-            if (sharedPreferences.contains("latitude") && sharedPreferences.contains("longitude")) {
-                val latitude = sharedPreferences.getString("latitude", "0")?.toFloat()!!
-                val longitude = sharedPreferences.getString("longitude", "0")?.toFloat()!!
+            if (sharedPreferences.contains(KEY_PREFERENCES_LATITUDE) && sharedPreferences.contains(
+                    KEY_PREFERENCES_LONGITUDE)) {
+                val latitude = sharedPreferences.getString(KEY_PREFERENCES_LATITUDE, "0")?.toFloat()!!
+                val longitude = sharedPreferences.getString(KEY_PREFERENCES_LONGITUDE, "0")?.toFloat()!!
                 return Pair(latitude, longitude)
             } else throw IllegalStateException("Something went wrong!")
         }

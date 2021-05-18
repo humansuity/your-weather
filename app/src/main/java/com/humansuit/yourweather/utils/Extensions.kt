@@ -4,19 +4,15 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humansuit.yourweather.R
-import com.humansuit.yourweather.view.data.ErrorState
+import com.humansuit.yourweather.model.data.ErrorState
 
 
 fun Activity.showErrorScreen(error: ErrorState) {
-    val bundle = Bundle().apply { putSerializable("ERROR_BUNDLE_KEY", error) }
+    val bundle = Bundle().apply { putSerializable(KEY_BUNDLE_ERROR, error) }
     val navController = findNavController(R.id.nav_host_fragment)
     navController.setGraph(R.navigation.error_state_nav_graph, bundle)
 }

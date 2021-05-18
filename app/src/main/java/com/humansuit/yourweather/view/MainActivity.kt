@@ -9,7 +9,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
@@ -19,7 +18,7 @@ import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.ActivityMainBinding
 import com.humansuit.yourweather.utils.*
 import com.humansuit.yourweather.utils.LocationListener
-import com.humansuit.yourweather.view.data.ErrorState
+import com.humansuit.yourweather.model.data.ErrorState
 import by.kirich1409.viewbindingdelegate.viewBinding
 
 
@@ -45,7 +44,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
         super.onCreate(savedInstanceState)
         getLastLocation(
             onSuccess = { location -> loadFragmentsWithLocation(location) },
-            onFailure = { showErrorScreen(ErrorState("Location is not available, please turn it on", R.drawable.ic_location)) },
+            onFailure = { showErrorScreen(ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)) },
             onNewLocationRequested = mLocationCallback
         )
     }
@@ -62,10 +61,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLastLocation(
                         onSuccess = { location -> loadFragmentsWithLocation(location) },
-                        onFailure = { showErrorScreen(ErrorState("Location is not available, please turn it on", R.drawable.ic_location)) },
+                        onFailure = { showErrorScreen(ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)) },
                         onNewLocationRequested = mLocationCallback
                     )
-                } else showErrorScreen(ErrorState("Permissions is not granted", R.drawable.ic_permissions))
+                } else showErrorScreen(ErrorState(ErrorList.PERMISSION.state, R.drawable.ic_permissions))
             }
         }
     }

@@ -1,12 +1,12 @@
 package com.humansuit.yourweather.view.current_weather
 
-import android.util.Log
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.model.WeatherModel
-import com.humansuit.yourweather.view.data.CurrentWeatherState
+import com.humansuit.yourweather.model.data.CurrentWeatherState
 import com.humansuit.yourweather.network.data.current_weather.WeatherStateResponse
-import com.humansuit.yourweather.view.data.ErrorState
+import com.humansuit.yourweather.utils.ErrorList
+import com.humansuit.yourweather.model.data.ErrorState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.observers.DisposableSingleObserver
@@ -26,7 +26,6 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
     override fun onViewDetach() {
         disposable.dispose()
         view = null
-        Log.e("Lifecycle", "OnViewDetached called in CurrentWeatherPresenter")
     }
 
     private fun loadCurrentWeather() {
@@ -54,17 +53,17 @@ class CurrentWeatherPresenter(view: CurrentWeatherView,
                                 view?.showWeatherState(currWeatherState)
                             }
                         }
-                        else view?.showErrorScreen(ErrorState("Something went wrong", R.drawable.ic_error))
+                        else view?.showErrorScreen(ErrorState(ErrorList.UNDEFINED.state, R.drawable.ic_error))
                     }
 
                     override fun onError(e: Throwable?) {
-                        if (e?.message != null) view?.showErrorScreen(ErrorState("Internet connection problem, check whether you connected to network", R.drawable.ic_no_internet_icon))
-                        else view?.showErrorScreen(ErrorState("Internet connection problem, check whether you connected to network", R.drawable.ic_no_internet_icon))
+                        if (e?.message != null) view?.showErrorScreen(ErrorState(ErrorList.NETWORK.state, R.drawable.ic_no_internet_icon))
+                        else view?.showErrorScreen(ErrorState(ErrorList.NETWORK.state, R.drawable.ic_no_internet_icon))
                     }
                 })
             )
         } catch (e: IllegalStateException) {
-            view?.showErrorScreen(ErrorState("Something went wrong", R.drawable.ic_error))
+            view?.showErrorScreen(ErrorState(ErrorList.UNDEFINED.state, R.drawable.ic_error))
         }
 
     }

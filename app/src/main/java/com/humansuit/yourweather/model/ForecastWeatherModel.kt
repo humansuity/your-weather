@@ -1,18 +1,14 @@
 package com.humansuit.yourweather.model
 
 import android.content.SharedPreferences
-import com.humansuit.yourweather.R
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
 import com.humansuit.yourweather.network.data.forecast.ForecastListItem
-import com.humansuit.yourweather.utils.WeatherStateIconRelation
-import com.humansuit.yourweather.view.MainContract
-import com.humansuit.yourweather.view.data.ForecastSection
 import com.humansuit.yourweather.utils.WeekDayList
 import com.humansuit.yourweather.utils.getWeatherStateIcon
+import com.humansuit.yourweather.view.MainContract
+import com.humansuit.yourweather.model.data.ForecastSection
 import io.reactivex.rxjava3.core.Single
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.util.*
 
 class ForecastWeatherModel(
@@ -34,9 +30,9 @@ class ForecastWeatherModel(
         return getForecastSectionList(dailyForecastList)
     }
 
-    private fun getForecastSectionList(dailyForecastList
-                                       : MutableMap<String, ArrayList<ForecastSection.WeatherState>>)
-            : List<ForecastSection> {
+    private fun getForecastSectionList(
+        dailyForecastList: MutableMap<String, ArrayList<ForecastSection.WeatherState>>
+    ): List<ForecastSection> {
         val forecastSectionList = arrayListOf<ForecastSection>()
         dailyForecastList.keys.forEach { dayKey ->
             val dayOfWeek = ForecastSection.WeekDay(dayKey)
@@ -45,6 +41,7 @@ class ForecastWeatherModel(
                 forecastSectionList.add(weatherState)
             }
         }
+
         return forecastSectionList
     }
 

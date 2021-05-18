@@ -1,4 +1,4 @@
-package com.humansuit.yourweather.view.data
+package com.humansuit.yourweather.model.data
 
 data class CurrentWeatherState(
     val location: String,
