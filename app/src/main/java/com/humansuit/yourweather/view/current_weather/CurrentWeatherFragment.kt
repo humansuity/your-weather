@@ -65,7 +65,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
          *
          *     Can't understand why this method called when you switch
          *     from ForecastFragment to this one. So that i must wrap presenter with nullable,
-         *     otherwise the app keeps crashing because of nullable presenter.
+         *     otherwise the app keeps crashing because of nullable presenter :(
          *
          */
     }

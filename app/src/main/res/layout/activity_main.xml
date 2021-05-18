@@ -28,8 +28,7 @@
                 android:layout_marginRight="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:textAlignment="center"
-                android:textSize="19sp"
-                tools:text="Today" />
+                android:textSize="19sp" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -49,16 +48,26 @@
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
+
+    <ScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:defaultNavHost="true" />
+
+    </ScrollView>
+
+
 
     <ProgressBar
         android:id="@+id/progressBar"
