@@ -52,7 +52,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
         super.onCreate(savedInstanceState)
         getLastLocation(
             onSuccess = { location -> loadFragmentsWithLocation(location) },
-            onFailure = { showErrorScreen(ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)) },
+            onFailure = { showErrorScreen(
+                ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)
+            ) },
             onNewLocationRequested = mLocationCallback
         )
     }
@@ -69,10 +71,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLastLocation(
                         onSuccess = { location -> loadFragmentsWithLocation(location) },
-                        onFailure = { showErrorScreen(ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)) },
+                        onFailure = { showErrorScreen(
+                            ErrorState(ErrorList.LOCATION.state, R.drawable.ic_location)
+                        ) },
                         onNewLocationRequested = mLocationCallback
                     )
-                } else showErrorScreen(ErrorState(ErrorList.PERMISSION.state, R.drawable.ic_permissions))
+                } else showErrorScreen(
+                    ErrorState(ErrorList.PERMISSION.state, R.drawable.ic_permissions)
+                )
             }
         }
     }
@@ -109,6 +115,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
             requestPermissions()
         }
     }
+
 
     private fun setEnableUi(enable: Boolean) {
         viewBinding.navView.menu.forEach { it.isEnabled = enable }
