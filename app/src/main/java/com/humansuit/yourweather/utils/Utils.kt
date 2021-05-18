@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Location
 import androidx.preference.PreferenceManager
 import com.humansuit.yourweather.R
-import java.lang.IllegalArgumentException
 
 const val TYPE_WEEKDAY = 0
 const val TYPE_WEATHER_STATE = 1

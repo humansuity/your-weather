@@ -14,14 +14,18 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.forEach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.location.*
+import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.ActivityMainBinding
-import com.humansuit.yourweather.utils.*
-import com.humansuit.yourweather.utils.LocationListener
 import com.humansuit.yourweather.model.data.ErrorState
-import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.humansuit.yourweather.utils.ErrorList
+import com.humansuit.yourweather.utils.LocationListener
+import com.humansuit.yourweather.utils.saveLastLocation
+import com.humansuit.yourweather.utils.showErrorScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 

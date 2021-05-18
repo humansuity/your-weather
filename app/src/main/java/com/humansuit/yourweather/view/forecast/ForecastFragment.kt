@@ -6,28 +6,19 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentForecastBinding
 import com.humansuit.yourweather.model.ForecastWeatherModel
-import com.humansuit.yourweather.network.OpenWeatherService
+import com.humansuit.yourweather.model.data.ErrorState
+import com.humansuit.yourweather.model.data.ForecastSection
 import com.humansuit.yourweather.utils.ActivityStateObserver
-import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.showErrorScreen
 import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
-import com.humansuit.yourweather.model.data.ErrorState
-import com.humansuit.yourweather.model.data.ForecastSection
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 

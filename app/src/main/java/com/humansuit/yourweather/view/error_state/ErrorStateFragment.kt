@@ -23,21 +23,12 @@ class ErrorStateFragment : Fragment(R.layout.fragment_error_state) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val errorState = arguments?.getSerializable(KEY_BUNDLE_ERROR) as ErrorState
-
-        with(viewBinding) {
-            errorTextView.text = errorState.message
-            iconView.setImageResource(errorState.icon)
-            retryButton.setOnClickListener {
-                retryButton.isEnabled = false
-                mLocationListener.getLastLocation(
-                    onSuccess = { loadMainNavGraph() },
-                    onFailure = {
-                        showSnackbar(view)
-                        retryButton.isEnabled = true
-                    },
-                    onNewLocationRequested = mLocationCallback
-                )
+        arguments?.takeIf { it.containsKey(KEY_BUNDLE_ERROR) }.let {
+            val errorState = arguments?.getSerializable(KEY_BUNDLE_ERROR) as ErrorState
+            with(viewBinding) {
+                errorTextView.text = errorState.message
+                iconView.setImageResource(errorState.icon)
+                retryButton.setOnClickListener(retryButtonListener)
             }
         }
     }
@@ -46,6 +37,18 @@ class ErrorStateFragment : Fragment(R.layout.fragment_error_state) {
         super.onAttach(context)
         try { mLocationListener = context as LocationListener }
         catch (e: ClassCastException) {  }
+    }
+
+    private val retryButtonListener = View.OnClickListener {
+        viewBinding.retryButton.isEnabled = false
+        mLocationListener.getLastLocation(
+            onSuccess = { loadMainNavGraph() },
+            onFailure = {
+                showSnackbar(it)
+                viewBinding.retryButton.isEnabled = true
+            },
+            onNewLocationRequested = mLocationCallback
+        )
     }
 
     private val mLocationCallback = object : LocationCallback() {

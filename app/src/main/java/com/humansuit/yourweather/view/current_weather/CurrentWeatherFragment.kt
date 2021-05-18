@@ -2,35 +2,24 @@ package com.humansuit.yourweather.view.current_weather
 
 import android.content.Context
 import android.content.Intent
-import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.humansuit.yourweather.R
 import com.humansuit.yourweather.databinding.FragmentCurrentWeatherBinding
 import com.humansuit.yourweather.model.WeatherModel
 import com.humansuit.yourweather.model.data.CurrentWeatherState
-import com.humansuit.yourweather.network.OpenWeatherService
+import com.humansuit.yourweather.model.data.ErrorState
 import com.humansuit.yourweather.utils.ActivityStateObserver
-import com.humansuit.yourweather.view.MainContract
-import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.utils.showErrorScreen
-import com.humansuit.yourweather.model.data.ErrorState
+import com.humansuit.yourweather.view.MainContract
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint

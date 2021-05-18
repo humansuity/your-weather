@@ -1,7 +1,6 @@
 package com.humansuit.yourweather.network.data.current_weather
 
 import com.squareup.moshi.Json
-import kotlin.math.roundToInt
 
 data class Rain (
     @field:Json(name = "1h") val oneHourRainfall: Float = 0.0F,
