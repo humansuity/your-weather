@@ -21,22 +21,26 @@ import com.humansuit.yourweather.view.MainContract
 import com.humansuit.yourweather.view.adapter.ForecastListAdapter
 import com.humansuit.yourweather.model.data.ErrorState
 import com.humansuit.yourweather.model.data.ForecastSection
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
 
     private val viewBinding: FragmentForecastBinding by viewBinding()
     private var presenter: MainContract.Presenter? = null
 
+    @Inject lateinit var forecastWeatherModel: ForecastWeatherModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val forecastWeatherModel = ForecastWeatherModel(getWeatherApi(), sharedPreferences)
         setPresenter(ForecastPresenter(this, forecastWeatherModel))
         presenter?.onViewCreated()
     }
@@ -79,25 +83,4 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast), ForecastView {
         requireActivity().showErrorScreen(error)
     }
 
-    private fun getWeatherApi(): OpenWeatherService? {
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(90, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(OPEN_WEATHER_API)
-            .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build()
-
-        return retrofit.create(OpenWeatherService::class.java)
-    }
 }

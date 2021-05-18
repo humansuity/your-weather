@@ -11,6 +11,7 @@ import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.forEach
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.location.*
@@ -20,8 +21,11 @@ import com.humansuit.yourweather.utils.*
 import com.humansuit.yourweather.utils.LocationListener
 import com.humansuit.yourweather.model.data.ErrorState
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener {
 
     private val viewBinding by viewBinding(ActivityMainBinding::bind, R.id.container)
@@ -77,6 +81,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
         onNewLocationRequested: LocationCallback
     ) {
         showProgressBar(show = true)
+        setEnableUi(enable = false)
         if (checkPermissions()) {
             if (isLocationEnabled())
                 LocationServices.getFusedLocationProviderClient(applicationContext)
@@ -85,19 +90,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LocationListener
                         if (location != null) {
                             onSuccess(location)
                             showProgressBar(show = false)
+                            setEnableUi(enable = true)
                         }
                         else requestNewLocationData(onNewLocationRequested)
                     }
             else {
                 onFailure()
                 showProgressBar(show = false)
+                setEnableUi(enable = true)
             }
         } else {
             showProgressBar(show = false)
+            setEnableUi(enable = true)
             requestPermissions()
         }
     }
 
+    private fun setEnableUi(enable: Boolean) {
+        viewBinding.navView.menu.forEach { it.isEnabled = enable }
+    }
 
     private fun initUiComponents() {
         val navController = findNavController(R.id.nav_host_fragment)

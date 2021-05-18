@@ -23,6 +23,7 @@ import com.humansuit.yourweather.utils.OPEN_WEATHER_API
 import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.utils.showErrorScreen
 import com.humansuit.yourweather.model.data.ErrorState
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,20 +31,19 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), CurrentWeatherView {
 
     private val viewBinding: FragmentCurrentWeatherBinding by viewBinding()
     private var presenter: MainContract.Presenter? = null
     private var shareButton: Button? = null
 
+    @Inject lateinit var weatherModel: WeatherModel
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val weatherModel = WeatherModel(
-            getWeatherApi(), sharedPreferences,
-            Geocoder(requireContext(), Locale.getDefault())
-        )
         initUiComponents()
         setPresenter(CurrentWeatherPresenter(this, weatherModel))
         presenter?.onViewCreated()
@@ -145,29 +145,6 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather), Curr
                 rainfall = weatherWidgetContainer.rainfallText.text as String,
             )
         }
-    }
-
-
-    private fun getWeatherApi(): OpenWeatherService? {
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(90, TimeUnit.SECONDS)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(OPEN_WEATHER_API)
-            .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build()
-
-        return retrofit.create(OpenWeatherService::class.java)
     }
 
 }

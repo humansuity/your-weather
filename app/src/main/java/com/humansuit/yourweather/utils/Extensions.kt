@@ -17,11 +17,3 @@ fun Activity.showErrorScreen(error: ErrorState) {
     navController.setGraph(R.navigation.error_state_nav_graph, bundle)
 }
 
-
-fun Activity.showProgressBar(show: Boolean) {
-    val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-    val navView = findViewById<BottomNavigationView>(R.id.nav_view)
-    progressBar.visibility = if (show) View.VISIBLE else View.INVISIBLE
-    navView.menu.forEach { it.isEnabled = !show }
-}
-

@@ -1,19 +1,20 @@
 package com.humansuit.yourweather.model
 
-import android.content.SharedPreferences
+import com.humansuit.yourweather.di.AppPreferenceProvider
+import com.humansuit.yourweather.model.data.ForecastSection
 import com.humansuit.yourweather.network.OpenWeatherService
 import com.humansuit.yourweather.network.data.forecast.FiveDayForecastResponse
 import com.humansuit.yourweather.network.data.forecast.ForecastListItem
 import com.humansuit.yourweather.utils.WeekDayList
 import com.humansuit.yourweather.utils.getWeatherStateIcon
 import com.humansuit.yourweather.view.MainContract
-import com.humansuit.yourweather.model.data.ForecastSection
 import io.reactivex.rxjava3.core.Single
 import java.util.*
+import javax.inject.Inject
 
-class ForecastWeatherModel(
+class ForecastWeatherModel @Inject constructor(
     private val weatherApi: OpenWeatherService?,
-    sharedPreferences: SharedPreferences,
+    sharedPreferences: AppPreferenceProvider,
 ) : MainContract.Model(sharedPreferences) {
 
     fun getFiveDayForecast(
@@ -25,12 +26,12 @@ class ForecastWeatherModel(
         return weatherApi?.getFiveDayForecast(latitude, longitude, timestamps, units)
     }
 
-    fun getParsedForecast(forecastList: List<ForecastListItem>): List<ForecastSection> {
-        val dailyForecastList = getDailyForecastList(forecastList)
-        return getForecastSectionList(dailyForecastList)
+    fun getForecastSectionList(forecastList: List<ForecastListItem>): List<ForecastSection> {
+        val dailyForecastList = parseToDailyForecastList(forecastList)
+        return parseToForecastSectionList(dailyForecastList)
     }
 
-    private fun getForecastSectionList(
+    private fun parseToForecastSectionList(
         dailyForecastList: MutableMap<String, ArrayList<ForecastSection.WeatherState>>
     ): List<ForecastSection> {
         val forecastSectionList = arrayListOf<ForecastSection>()
@@ -45,8 +46,8 @@ class ForecastWeatherModel(
         return forecastSectionList
     }
 
-    private fun getDailyForecastList(forecastList: List<ForecastListItem>)
-            : MutableMap<String, ArrayList<ForecastSection.WeatherState>> {
+    private fun parseToDailyForecastList(forecastList: List<ForecastListItem>)
+    : MutableMap<String, ArrayList<ForecastSection.WeatherState>> {
         val dailyForecastList = mutableMapOf<String, ArrayList<ForecastSection.WeatherState>>()
         forecastList.forEach { forecastItem ->
             val weatherState = ForecastSection.WeatherState(
